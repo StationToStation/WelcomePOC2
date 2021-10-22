@@ -1,0 +1,14 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "wm-reply-WelcomeHandlebars-web-part",
+    "title": "WM Reply - Welcome With Handlebars",
+    "id": "c6748ad0-30f5-11ec-970c-ebc3ca06a43e",
+    "version": "1.9.1.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": false
+  },
+  "paths": {
+    "zippedPackage": "solution/wm-reply-WelcomeHandlebars-web-part.sppkg"
+  }
+}

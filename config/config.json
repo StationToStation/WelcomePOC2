@@ -1,0 +1,27 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "welcome-poc-2-webpart": {
+      "components": [
+        {
+          "entrypoint": "./lib/app/WelcomePoc2/WelcomePoc2WebPart.js",
+          "manifest": "./src/app/WelcomePoc2/WelcomePoc2WebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {
+    "react-redux": {
+      "path": "./node_modules/react-redux/dist/react-redux.min.js",
+      "globalName": "react-redux"
+    },
+    "redux": {
+      "path": "./node_modules/redux/dist/redux.min.js",
+      "globalName": "redux"
+    }
+  },
+  "localizedResources": {
+    "WelcomePoc2WebPartStrings": "lib/app/WelcomePoc2/loc/{locale}.js"
+  }
+}

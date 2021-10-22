@@ -1,0 +1,30 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "c683cd10-30f5-11ec-970c-ebc3ca06a43e",
+  "alias": "WelcomePoc2WebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": [
+    "SharePointWebPart"
+  ],
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+      "group": {
+        "default": "Other"
+      },
+      "title": {
+        "default": "Welcome With Handlebars"
+      },
+      "description": {
+        "default": "WM Reply - Welcome With Handlebars."
+      },
+      "officeFabricIconFontName": "Page",
+      "properties": {
+        "description": "WelcomePoc2"
+      }
+    }
+  ]
+}
