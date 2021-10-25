@@ -5,6 +5,7 @@ import type { Context } from '@wm/accelerator-core/lib/types/Context';
 import { isDebugMode } from '@wm/accelerator-core/lib/utilities/debugging/isDebugMode';
 import crashReportMiddleware from '@wm/accelerator-core/lib/xredux/middleware/crash-report.middleware';
 import { propsReducer } from '@app/WelcomePoc2/state/reducers/props';
+import {slidesReducer} from '@app/WelcomePoc2/state/reducers/slides';
 import { IAppState } from './IAppState';
 // #endregion
 
@@ -22,7 +23,8 @@ export const createWebPartStore = (context: Context, { devTools, middleware = []
             ] as any,
         reducer: {
             ...reducer,
-            props: propsReducer
+            props: propsReducer,
+            slides: slidesReducer
         },
     });
 };

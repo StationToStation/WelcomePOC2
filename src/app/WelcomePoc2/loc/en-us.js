@@ -1,10 +1,12 @@
 // @ts-check
 /// <reference path="mystrings.d.ts" />
-define([], function() {
+define([], function () {
   /**@type {IWelcomePoc2WebPartStrings} */
   return {
-    "PropertyPaneDescription": "Description",
-    "BasicGroupName": "Group Name",
-    "DescriptionFieldLabel": "Description Field"
+    "Slides": {
+      "AddSlideButton": "Add slide",
+      "DefaultSlideTitle": "Default",
+      "SaveSlideButton": "Save"
+    }
   }
 });

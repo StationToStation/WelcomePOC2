@@ -6,6 +6,7 @@ import { default as layoutHTML } from '../layouts/layout.html'
 import { isArray } from 'lodash';
 import { useAppSelector } from '../state/hooks';
 import { useWebPartContext } from '@wm/accelerator-core';
+import ConfigPanel from './propertyPane/ConfigPanel';
 // #endregion
 
 const draft = {
@@ -30,8 +31,8 @@ export interface ILayoutProps {
 
 const Layout: React.FC<ILayoutProps> = () => {
     const parser = new DOMParser();
-
-    const title = useAppSelector(state => state.props.title);
+// slide1635156979095043070901277582085
+    const { title, slides } = useAppSelector(state => state.props);
     const webPartContext = useWebPartContext();
 
     const [layoutString, setLayoutString] = React.useState(layoutHTML);
@@ -126,7 +127,10 @@ const Layout: React.FC<ILayoutProps> = () => {
     // test();
 
     return (
-        <div dangerouslySetInnerHTML={{ __html: layoutString }}></div>
+        <div>
+            <div dangerouslySetInnerHTML={{ __html: layoutString }}></div>
+            <ConfigPanel />
+        </div>
     )
 }
 

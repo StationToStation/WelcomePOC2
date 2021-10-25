@@ -1,7 +1,9 @@
 declare interface IWelcomePoc2WebPartStrings {
-    PropertyPaneDescription: string;
-    BasicGroupName: string;
-    DescriptionFieldLabel: string;
+    Slides: {
+        AddSlideButton: string;
+        DefaultSlideTitle: string;
+        SaveSlideButton: string;
+    }
 }
 
 declare module 'WelcomePoc2WebPartStrings' {

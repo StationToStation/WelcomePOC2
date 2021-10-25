@@ -4,3 +4,7 @@ export interface ISlide {
     title: string;
     link: string;
 }
+
+export interface ISlidesMap {
+    [id: string]: ISlide
+}
