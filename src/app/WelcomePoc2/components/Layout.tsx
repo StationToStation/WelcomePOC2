@@ -1,25 +1,14 @@
 // #region imports
 import * as React from 'react';
-import Handlebars, { compile } from 'handlebars';
+import { useDispatch } from 'react-redux';
 
-import { default as layoutHTML } from '../layouts/layout.html'
-import { isArray } from 'lodash';
-import { useAppSelector } from '../state/hooks';
 import { useWebPartContext } from '@wm/accelerator-core';
-import ConfigPanel from './propertyPane/ConfigPanel';
-// #endregion
 
-const draft = {
-    slides: [
-        {
-            title: 'please work',
-            link: 'https://google.com',
-            background: 'https://docs.microsoft.com/en-us/stream/media/stream-with-sharepoint/sp-webpart-picker.png'
-        }
-    ],
-    username: 'Ana',
-    icon: 'icon'
-};
+import { useAppSelector } from '../state/hooks';
+import ConfigPanel from './propertyPane/ConfigPanel';
+import { compileHandlebars, getHtmlTemplates, parseHtmlTemplates, parseStringContent, stringToHtml } from '../util/layoutUtil';
+import { showNextSlide, showPrevSlide } from '@app/WelcomePoc2/state/actions/slides';
+// #endregion
 
 export interface ITemplatesMap {
     [key: string]: DocumentFragment | undefined
@@ -30,105 +19,52 @@ export interface ILayoutProps {
 }
 
 const Layout: React.FC<ILayoutProps> = () => {
-    const parser = new DOMParser();
-// slide1635156979095043070901277582085
-    const { title, slides } = useAppSelector(state => state.props);
+    const { slides, layoutString } = useAppSelector(state => state.props);
+    const { active, slide } = useAppSelector(state => state.slides);
+    const dispatch = useDispatch();
     const webPartContext = useWebPartContext();
+    const containerRef = React.useRef<HTMLDivElement>(null);
 
-    const [layoutString, setLayoutString] = React.useState(layoutHTML);
-    const [parsedLayoutString, setParsedLayoutString] = React.useState(layoutHTML)
-    const [layout, setLayout] = React.useState<Document | undefined>(undefined);
-    const [htmlTemplates, setHtmlTemplates] = React.useState<ITemplatesMap | undefined>(undefined);
+    const [parsedLayoutString, setParsedLayoutString] = React.useState(layoutString);
 
-    const getHtmlTemplates = (rawLayout: Document | undefined, existingTemplates: ITemplatesMap | undefined) => {
-        const templatesList = rawLayout?.querySelectorAll('template');
-        const templatesMap: ITemplatesMap = { ...existingTemplates }
-        templatesList?.forEach((t) => {
-            console.log(t.id);
-            const templateContent = t.content/* .cloneNode(true) */;
-            templatesMap[t.id] = templateContent;
-        })
-        return templatesMap;
-    }
 
-    // TODO: context type
-    const compileHandlebars = (layoutString: string, context: { [key: string]: any }) => {
-        const template = compile(layoutString);
-        return template(context);
-    }
-
-    const parseHtmlTemplates = (templatesMap: ITemplatesMap | undefined) => {
-        const stringifiedTemplatesMap: { [key: string]: string } = {};
-        for (const key in templatesMap) {
-            if (!templatesMap[key]) { continue; }
-            const parent = document.createElement('div');
-            parent.append(templatesMap[key]!.cloneNode(true));
-            console.log(key, parent.innerHTML)
-            stringifiedTemplatesMap[key] = parent.innerHTML;
-        }
-        return stringifiedTemplatesMap;
-    }
-
-    // TODO: context type
-    const parseStringContent = (context: { [key: string]: any }): { [key: string]: any } => {
-        let newContext = {
-            ...context,
-            username: webPartContext.pageContext.user.displayName,
-            userphoto: `/_layouts/15/userphoto.aspx?size=L&username=${webPartContext.pageContext.user.email}`
-        };
-        if (context.slides && isArray(context.slides)) {
-            newContext = {
-                ...newContext,
-                ...context.slides[0],
-                title: title
-            };
-        }
-        return newContext;
-    }
-
-    const stringToHtml = (stringifiedHtml: string) => {
-        const doc = parser.parseFromString(stringifiedHtml, 'text/html');
-        return doc;
-    }
 
     React.useEffect(() => {
-        setLayout(stringToHtml(layoutString));
-    }, [layoutString]);
-
-    React.useEffect(() => {
-        const newTemplates = getHtmlTemplates(layout, htmlTemplates);
-        setHtmlTemplates(newTemplates);
-    }, [layout]);
-
-    React.useEffect(() => {
-        if (layout && htmlTemplates && Object.keys(htmlTemplates).length > 0) {
-            // const withHtmlTemplates = insertHtmlTemplates(layoutString, htmlTemplates);
-            // const withStringValues = insertStrings(withHtmlTemplates, draft);
+        const layout = stringToHtml(layoutString);
+        const newHtmlTemplates = getHtmlTemplates(layout);
+        if (layout && newHtmlTemplates && Object.keys(newHtmlTemplates).length > 0) {
+            const stringContent = parseStringContent(webPartContext, slides, active, slide);
             const context = {
-                ...parseHtmlTemplates(htmlTemplates),
-                ...parseStringContent(draft)
+                ...parseHtmlTemplates(newHtmlTemplates, stringContent),
+                ...stringContent
             };
-            const newLayoutString = compileHandlebars(layoutString, context);
-            setLayoutString(newLayoutString);
+
+            let newLayoutString = compileHandlebars(layoutString, context);
+            setParsedLayoutString(newLayoutString);
         }
-    }, [htmlTemplates, title])
+    }, [layoutString, slides, active, slide])
 
-    // const test = async () => {
-    //     // const stream = await fetch("../layouts/layout.html");
-    //     // const text = await stream.text();
-    //     // const result = define(JSON.stringify(layoutHTML));
-    //     // console.log(result);
-    //     // return result;
-    //     const p = new DOMParser();
-    //     const d = p.parseFromString(JSON.stringify(layoutHTML), 'text/html');
-    //     console.log(d);
-    // }
+    React.useEffect(() => {
+        if (!containerRef.current) { return; }
+        //todo: add guid
+        const prevSlideButton = containerRef.current.querySelector('#left-clickable');
+        if (prevSlideButton) {
+            prevSlideButton.addEventListener('click', () => dispatch(showPrevSlide()))
+        }
+        const nextSlideButton = containerRef.current.querySelector('#right-clickable');
+        if (nextSlideButton) {
+            nextSlideButton.addEventListener('click', () => dispatch(showNextSlide()))
+        }
+    }, [parsedLayoutString])
 
-    // test();
 
     return (
         <div>
-            <div dangerouslySetInnerHTML={{ __html: layoutString }}></div>
+            <div
+                ref={containerRef}
+                dangerouslySetInnerHTML={{ __html: parsedLayoutString }}>
+
+            </div>
             <ConfigPanel />
         </div>
     )

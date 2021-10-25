@@ -11,12 +11,6 @@ import * as props from '@app/WelcomePoc2/state/actions/props';
 // #endregion
 
 
-// export const loadCustomFields = createAsyncThunk<ProfileField[], void, { extra: Context, state: IAppState }>('editor/loadCustomFields', async (_, api) => {
-//     const context = api.extra;
-//     const service = context.serviceScope.consume(CustomFieldsService.serviceKey);
-//     return service.getFields();
-// });
-
 export const addSlide = createAsyncThunk<Partial<ISlide>, void, { extra: Context, state: IAppState }>('slides/add', async (_, api) => {
     const slide: Partial<ISlide> = {
         id: generateInstanceId('slide')
@@ -32,12 +26,47 @@ export const updateSlide = createAction('slides/update', (slide: Partial<ISlide>
     return { payload: { ...slide } };
 });
 
+export const editSlide = createAsyncThunk<string, string, { extra: Context, state: IAppState }>('slides/edit', async (id, api) => {
+    const slide = api.getState().props.slides[id];
+    api.dispatch(updateSlide(slide));
+    return id
+});
+
 export const saveSlide = createAsyncThunk<ISlide, ISlide, { extra: Context, state: IAppState }>('slides/save', async (slide, api) => {
-    const existingSlides = api.getState().props.slides;
+    const { slides, slidesOrder } = api.getState().props;
     const updatedSlides = {
-        ...existingSlides
+        ...slides
         , [slide.id]: slide
     };
-    api.dispatch(props.updateProps('slides', updatedSlides))
+    api.dispatch(props.updateProps('slides', updatedSlides));
+    if (slidesOrder.indexOf(slide.id) === -1) {
+        api.dispatch(props.updateProps('slidesOrder', [...slidesOrder, slide.id]))
+    }
     return slide;
+});
+
+export const setActiveSlide = createAction('slides/show', (id: string) => {
+    return { payload: id };
+});
+
+export const showNextSlide = createAsyncThunk<void, void, { extra: Context, state: IAppState }>('slides/next', async (_, api) => {
+    const { slides, props } = api.getState();
+    if (typeof slides.active === 'string') {
+        const currentIndex = props.slidesOrder.indexOf(slides.active);
+        const nextIndex = currentIndex === props.slidesOrder.length - 1
+            ? 0 :
+            currentIndex + 1;
+        api.dispatch(setActiveSlide(props.slidesOrder[nextIndex]));
+    }
+});
+
+export const showPrevSlide = createAsyncThunk<void, void, { extra: Context, state: IAppState }>('slides/prev', async (_, api) => {
+    const { slides, props } = api.getState();
+    if (typeof slides.active === 'string') {
+        const currentIndex = props.slidesOrder.indexOf(slides.active);
+        const nextIndex = currentIndex === 0
+            ? props.slidesOrder.length - 1 :
+            currentIndex - 1;
+        api.dispatch(setActiveSlide(props.slidesOrder[nextIndex]));
+    }
 });

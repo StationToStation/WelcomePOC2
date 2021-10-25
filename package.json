@@ -61,6 +61,7 @@
     "ajv": "5.2.2",
     "gulp": "~3.9.1",
     "handlebars": "^4.7.7",
+    "html-react-parser": "^1.4.0",
     "ngrok": "~3.2.7",
     "typescript": "3.7.2"
   }

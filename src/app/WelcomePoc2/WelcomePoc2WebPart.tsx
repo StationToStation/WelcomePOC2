@@ -50,7 +50,6 @@ export default class WelcomePoc2WebPart extends BaseAcceleratorWebPart<IWelcomeP
 
     protected async wmGetPropertyPaneConfigurationAsync(): Promise<() => IPropertyPaneConfiguration> {
         const { getPropertyPaneConfiguration } = await import(/* webpackChunkName: "property-pane" */'./WelcomePoc2WebPartPropertyPane');
-        // await this.store.dispatch(loadManagedProperties(this.properties.searchText));
         return () => getPropertyPaneConfiguration(this.context, this.store, this.properties, this.wmUpdateProperty.bind(this));
     }
 

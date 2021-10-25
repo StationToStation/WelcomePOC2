@@ -1,16 +1,16 @@
 // #region imports
 import { createReducer } from '@reduxjs/toolkit';
+
 import { IWebPartProps } from '@app/WelcomePoc2/IWebPartProps';
 import { getProps } from '@app/WelcomePoc2/state/actions/props';
-import strings from 'WelcomePoc2WebPartStrings';
 import { ISlidesMap } from '@app/WelcomePoc2/models/ISlide';
+import { default as layoutHTML } from '../../layouts/layout.html';
 // #endregion
 
 const initialState: IWebPartProps = {
-    // TODO: remove?
-    // instanceId: '',
-    title: '',
-    slides: {} as ISlidesMap
+    slides: {} as ISlidesMap,
+    slidesOrder: [],
+    layoutString: layoutHTML
 };
 
 export const propsReducer = createReducer(initialState, builder => {

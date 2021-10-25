@@ -22,7 +22,7 @@ export function getPropertyPaneConfiguration(
             {
                 displayGroupsAsAccordion: true,
                 header: {
-                    description: 'stophardcoding strings',//strings.PropertyPane.Header,
+                    description: 'stop hardcoding strings',//strings.PropertyPane.Header,
                 },
                 groups: [
                     {
@@ -30,6 +30,11 @@ export function getPropertyPaneConfiguration(
                         groupFields: [
                             PropertyPaneTextField('title', {
                                 label: 'Title'
+                            }),
+                            PropertyPaneTextField('layoutString', {
+                                label: 'Layout string',
+                                multiline: true,
+                                resizable: true
                             })
                         ]
                     }
