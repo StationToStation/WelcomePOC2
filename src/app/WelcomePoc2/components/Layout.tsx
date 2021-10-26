@@ -1,73 +1,53 @@
 // #region imports
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
 
-import { useWebPartContext } from '@wm/accelerator-core';
+import { useService, useWebPartContext } from '@wm/accelerator-core';
 
 import { useAppSelector } from '../state/hooks';
 import ConfigPanel from './propertyPane/ConfigPanel';
-import { compileHandlebars, getHtmlTemplates, parseHtmlTemplates, parseStringContent, stringToHtml } from '../util/layoutUtil';
-import { showNextSlide, showPrevSlide } from '@app/WelcomePoc2/state/actions/slides';
+import { LayoutService } from '../services/LayoutService';
+import ReactLayout from './ReactLayout';
 // #endregion
 
 export interface ITemplatesMap {
-    [key: string]: DocumentFragment | undefined
+    [key: string]: DocumentFragment | undefined;
 }
+
 
 export interface ILayoutProps {
 
 }
 
 const Layout: React.FC<ILayoutProps> = () => {
-    const { slides, layoutString } = useAppSelector(state => state.props);
+    const { slides, layoutString, instanceId } = useAppSelector(state => state.props);
     const { active, slide } = useAppSelector(state => state.slides);
-    const dispatch = useDispatch();
     const webPartContext = useWebPartContext();
-    const containerRef = React.useRef<HTMLDivElement>(null);
 
     const [parsedLayoutString, setParsedLayoutString] = React.useState(layoutString);
 
-
+    const layoutService: LayoutService = useService(LayoutService.serviceKey);
 
     React.useEffect(() => {
-        const layout = stringToHtml(layoutString);
-        const newHtmlTemplates = getHtmlTemplates(layout);
+        const layout = layoutService.stringToHtml(layoutString);
+        const newHtmlTemplates = layoutService.getHtmlTemplates(layout);
         if (layout && newHtmlTemplates && Object.keys(newHtmlTemplates).length > 0) {
-            const stringContent = parseStringContent(webPartContext, slides, active, slide);
+            const stringContent = layoutService.parseStringContent(webPartContext, slides, instanceId, active, slide);
             const context = {
-                ...parseHtmlTemplates(newHtmlTemplates, stringContent),
+                ...layoutService.parseHtmlTemplates(newHtmlTemplates, stringContent, instanceId),
                 ...stringContent
             };
 
-            let newLayoutString = compileHandlebars(layoutString, context);
+            let newLayoutString = layoutService.compileHandlebars(layoutString, context);
             setParsedLayoutString(newLayoutString);
         }
-    }, [layoutString, slides, active, slide])
-
-    React.useEffect(() => {
-        if (!containerRef.current) { return; }
-        //todo: add guid
-        const prevSlideButton = containerRef.current.querySelector('#left-clickable');
-        if (prevSlideButton) {
-            prevSlideButton.addEventListener('click', () => dispatch(showPrevSlide()))
-        }
-        const nextSlideButton = containerRef.current.querySelector('#right-clickable');
-        if (nextSlideButton) {
-            nextSlideButton.addEventListener('click', () => dispatch(showNextSlide()))
-        }
-    }, [parsedLayoutString])
-
+    }, [layoutString, slides, active, slide]);
 
     return (
         <div>
-            <div
-                ref={containerRef}
-                dangerouslySetInnerHTML={{ __html: parsedLayoutString }}>
-
-            </div>
+            <ReactLayout source={parsedLayoutString} />
             <ConfigPanel />
         </div>
-    )
-}
+    );
+};
 
 export default React.memo(Layout);

@@ -2,12 +2,12 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { generateInstanceId } from '@wm/accelerator-core/lib/utilities/misc/generateInstanceId';
-import type { Context } from '@wm/accelerator-core/lib/types/Context';
 
 import { ISlide } from '@app/WelcomePoc2/models/ISlide';
 import { IAppState } from '../IAppState';
 import strings from 'WelcomePoc2WebPartStrings';
 import * as props from '@app/WelcomePoc2/state/actions/props';
+import { Context } from '@wm/accelerator-core/lib/types/Context';
 // #endregion
 
 
@@ -29,7 +29,7 @@ export const updateSlide = createAction('slides/update', (slide: Partial<ISlide>
 export const editSlide = createAsyncThunk<string, string, { extra: Context, state: IAppState }>('slides/edit', async (id, api) => {
     const slide = api.getState().props.slides[id];
     api.dispatch(updateSlide(slide));
-    return id
+    return id;
 });
 
 export const saveSlide = createAsyncThunk<ISlide, ISlide, { extra: Context, state: IAppState }>('slides/save', async (slide, api) => {
@@ -40,7 +40,7 @@ export const saveSlide = createAsyncThunk<ISlide, ISlide, { extra: Context, stat
     };
     api.dispatch(props.updateProps('slides', updatedSlides));
     if (slidesOrder.indexOf(slide.id) === -1) {
-        api.dispatch(props.updateProps('slidesOrder', [...slidesOrder, slide.id]))
+        api.dispatch(props.updateProps('slidesOrder', [...slidesOrder, slide.id]));
     }
     return slide;
 });

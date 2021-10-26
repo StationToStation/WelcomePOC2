@@ -6,5 +6,5 @@ export interface ISlide {
 }
 
 export interface ISlidesMap {
-    [id: string]: ISlide
+    [id: string]: ISlide;
 }

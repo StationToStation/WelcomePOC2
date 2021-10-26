@@ -22,6 +22,6 @@ export const propsMiddleware: (updateProperty: <TKey extends keyof IWebPartProps
         }
         else if (isGetPropsAction(action)) {
             console.log('get props action');
-            api.dispatch(setActiveSlide(action.payload.slidesOrder[0]))
+            api.dispatch(setActiveSlide(action.payload.slidesOrder[0]));
         }
     };

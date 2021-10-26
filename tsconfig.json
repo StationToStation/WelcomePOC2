@@ -27,9 +27,6 @@
         "paths": {
             "@app/*": [
                 "./src/app/*",
-            ],
-            "@components": [
-                "./src/app/WelcomePoc2/components"
             ]
         },
         "typeRoots": [

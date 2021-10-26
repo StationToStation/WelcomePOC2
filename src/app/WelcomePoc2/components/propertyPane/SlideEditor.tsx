@@ -13,7 +13,7 @@ import strings from 'WelcomePoc2WebPartStrings';
 import { ISlide } from '@app/WelcomePoc2/models/ISlide';
 // #endregion
 
-export interface ISlideEditorProps { };
+export interface ISlideEditorProps { }
 
 const SlideEditor: React.FC<ISlideEditorProps> = () => {
     const slide = useAppSelector(state => state.slides.slide);
@@ -36,9 +36,9 @@ const SlideEditor: React.FC<ISlideEditorProps> = () => {
 
     const handleSave = () => {
         if (slide?.title && slide.backgroundUrl && slide.id /* && slide.link */) {
-            dispatch(slides.saveSlide(slide as ISlide))
+            dispatch(slides.saveSlide(slide as ISlide));
         }
-    }
+    };
 
     return (
         <div>
@@ -47,7 +47,7 @@ const SlideEditor: React.FC<ISlideEditorProps> = () => {
             <ImagePicker selected={slide?.backgroundUrl} onSelect={handleChangeBackground} />
             <IconButton iconProps={{ iconName: 'Save' }} text={strings.Slides.SaveSlideButton} onClick={handleSave} />
         </div>
-    )
-}
+    );
+};
 
 export default React.memo(SlideEditor);

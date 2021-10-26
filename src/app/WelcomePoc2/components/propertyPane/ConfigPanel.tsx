@@ -7,21 +7,21 @@ import { useDispatch } from 'react-redux';
 import { DisplayMode, useDisplayMode } from '@wm/accelerator-core/lib/hooks/useDisplayMode';
 
 import * as slides from '@app/WelcomePoc2/state/actions/slides';
-import { useAppDispatch, useAppSelector } from '@app/WelcomePoc2/state/hooks';
+import { useAppSelector } from '@app/WelcomePoc2/state/hooks';
 import strings from 'WelcomePoc2WebPartStrings';
 import SlideEditor from './SlideEditor';
 import { ISlide } from '@app/WelcomePoc2/models/ISlide';
 import { DefaultButton } from 'office-ui-fabric-react';
 // #endregion
 
-export interface IConfigPanelProps { };
+export interface IConfigPanelProps { }
 
 const ConfigPanel: React.FC<IConfigPanelProps> = () => {
     const slidesMap = useAppSelector(state => state.props.slides);
     const isEdited = useAppSelector(state => state.slides.edited);
     const dispatch = useDispatch();
 
-    const displayMode = useDisplayMode()
+    const displayMode = useDisplayMode();
     const [isOpen, setIsOpen] = React.useState(displayMode === DisplayMode.Edit);
 
     const handleAdd = () => {
@@ -32,7 +32,7 @@ const ConfigPanel: React.FC<IConfigPanelProps> = () => {
         if (!isEdited) {
             setIsOpen(false);
         }
-    }
+    };
 
     const slidesList = React.useMemo(() => {
         const list: ISlide[] = [];
@@ -42,7 +42,7 @@ const ConfigPanel: React.FC<IConfigPanelProps> = () => {
 
     const handleEdit = (id: string) => {
         dispatch(slides.editSlide(id));
-    }
+    };
 
     return (
         <Panel
